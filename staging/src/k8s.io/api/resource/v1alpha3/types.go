@@ -985,6 +985,9 @@ type DeviceConstraint struct {
 	// accidentally ignore this additional, for them unknown match
 	// criteria.
 	//
+	// +optional
+	// +oneOf=ConstraintType
+	// +featureGate=DRACELDeviceConstraint
 	MatchExpression string `protobuf:"bytes,3,opt,name=matchExpression"`
 }
 

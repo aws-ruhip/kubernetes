@@ -224,6 +224,9 @@ const (
 	// is to move it into a separate KEP.
 	DRAAdminAccess featuregate.Feature = "DRAAdminAccess"
 
+	// TODO: remove
+	DRACELDeviceConstraint featuregate.Feature = "DRACELDeviceConstraint"
+
 	// owner: @pohly
 	// kep: http://kep.k8s.io/5055
 	//
