@@ -1135,6 +1135,10 @@ var defaultVersionedKubernetesFeatureGates = map[featuregate.Feature]featuregate
 		{Version: version.MustParse("1.32"), Default: false, PreRelease: featuregate.Alpha},
 	},
 
+	// DRACELDeviceConstraint: {
+	// 	{Version: version.MustParse("1.34"), Default: false, PreRelease: featuregate.Alpha},
+	// },
+
 	DRADeviceTaints: {
 		{Version: version.MustParse("1.33"), Default: false, PreRelease: featuregate.Alpha},
 	},

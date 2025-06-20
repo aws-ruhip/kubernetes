@@ -8888,3 +8888,5 @@ func validateNodeSwapStatus(nodeSwapStatus *core.NodeSwapStatus, fldPath *field.
 
 	return allErrors
 }
+
+func ValidateResourceClaimCELDeviceConstraint()

@@ -37,6 +37,8 @@ import (
 	"k8s.io/dynamic-resource-allocation/structured"
 	corevalidation "k8s.io/kubernetes/pkg/apis/core/validation"
 	"k8s.io/kubernetes/pkg/apis/resource"
+	"k8s.io/kubernetes/pkg/features"
+	utilfeature "k8s.io/apiserver/pkg/util/feature"
 )
 
 var (
@@ -306,6 +308,7 @@ func convertCELErrorToValidationError(fldPath *field.Path, expression string, er
 }
 
 func validateDeviceConstraint(constraint resource.DeviceConstraint, fldPath *field.Path, requestNames requestNames) field.ErrorList {
+	celDeviceConstraintEnabled := utilfeature.DefaultFeatureGate.Enabled(features.DRACELDeviceConstraint)
 	var allErrs field.ErrorList
 	allErrs = append(allErrs, validateSet(constraint.Requests, resource.DeviceRequestsMaxSize,
 		func(name string, fldPath *field.Path) field.ErrorList {
@@ -315,6 +318,9 @@ func validateDeviceConstraint(constraint resource.DeviceConstraint, fldPath *fie
 
 	if constraint.MatchAttribute == nil && constraint.MatchExpression == "" {
 		allErrs = append(allErrs, field.Required(fldPath, "must specify either matchAttribute or MatchExpression"))
+	}
+	if constraint.MatchExpression != "" && !celDeviceConstraintEnabled {
+		allErrs = append(allErrs, field.Forbidden(fldPath, "CEL device constraint feature gate is not enabled"))
 	}
 	if constraint.MatchAttribute != nil && constraint.MatchExpression != "" {
 		allErrs = append(allErrs, field.Invalid(fldPath, constraint, "cannot specify both matchAttribute and MatchExpression"))

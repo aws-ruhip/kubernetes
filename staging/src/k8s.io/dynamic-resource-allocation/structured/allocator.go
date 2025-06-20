@@ -73,6 +73,7 @@ type Features struct {
 	PrioritizedList      bool
 	PartitionableDevices bool
 	DeviceTaints         bool
+	CELDeviceConstraint  bool
 }
 
 // NewAllocator returns an allocator for a certain set of claims or an error if
@@ -259,6 +260,9 @@ func (a *Allocator) Allocate(ctx context.Context, node *v1.Node) (finalResult []
 				}
 				constraints[i] = m
 			case constraint.MatchExpression != "":
+				if !alloc.features.CELDeviceConstraint {
+					return nil, fmt.Errorf("claim %s, constraint #%d: unsupported constraint type CEL expression. Please enable the `DRACELDeviceConstraint` feature gate in kube-scheduler.", klog.KObj(claim), i)
+				}
 				logger := alloc.logger
 				alloc.logger.V(6).Info("Evaluating match expr constraint")
 				if loggerV := alloc.logger.V(6); loggerV.Enabled() {
