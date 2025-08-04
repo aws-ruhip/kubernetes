@@ -34,5 +34,6 @@ type Features struct {
 	EnableAsyncPreemption                        bool
 	EnablePodLevelResources                      bool
 	EnablePartitionableDevices                   bool
+	EnableCELDeviceConstraint					 bool
 	EnableStorageCapacityScoring                 bool
 }

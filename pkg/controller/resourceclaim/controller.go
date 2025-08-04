@@ -122,6 +122,7 @@ const (
 type Features struct {
 	AdminAccess     bool
 	PrioritizedList bool
+	CELDeviceConstraint bool
 }
 
 // NewController creates a ResourceClaim controller.
@@ -631,6 +632,10 @@ func (ec *Controller) handleClaim(ctx context.Context, pod *v1.Pod, podClaim v1.
 			return errors.New("template includes a prioritized list of subrequests, but the feature is disabled")
 		}
 
+		if !ec.features.CELDeviceConstraint && hasCELDeviceConstraint(template) {
+			return errors.New("template includes usage of CEL device constraint, but the feature is disabled")
+		}
+
 		// Create the ResourceClaim with pod as owner, with a generated name that uses
 		// <pod>-<claim name> as base.
 		isTrue := true
@@ -701,6 +706,15 @@ func needsAdminAccess(claimTemplate *resourceapi.ResourceClaimTemplate) bool {
 func hasPrioritizedList(claimTemplate *resourceapi.ResourceClaimTemplate) bool {
 	for _, request := range claimTemplate.Spec.Spec.Devices.Requests {
 		if len(request.FirstAvailable) > 0 {
+			return true
+		}
+	}
+	return false
+}
+
+func hasCELDeviceConstraint(claimTemplate *resourceapi.ResourceClaimTemplate) bool {
+	for _, constraint := range claimTemplate.Spec.Spec.Devices.Constraints {
+		if request.MatchExpression != nil {
 			return true
 		}
 	}

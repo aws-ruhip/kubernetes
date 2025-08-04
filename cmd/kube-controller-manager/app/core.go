@@ -442,6 +442,7 @@ func startResourceClaimController(ctx context.Context, controllerContext Control
 		resourceclaim.Features{
 			AdminAccess:     utilfeature.DefaultFeatureGate.Enabled(features.DRAAdminAccess),
 			PrioritizedList: utilfeature.DefaultFeatureGate.Enabled(features.DRAPrioritizedList),
+			CELDeviceConstraint: utilfeature.DefaultFeatureGate.Enabled(features.DRACELDeviceConstraint),
 		},
 		controllerContext.ClientBuilder.ClientOrDie("resource-claim-controller"),
 		controllerContext.InformerFactory.Core().V1().Pods(),

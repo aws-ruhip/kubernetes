@@ -60,6 +60,7 @@ func NewInTreeRegistry() runtime.Registry {
 		EnableAsyncPreemption:                        feature.DefaultFeatureGate.Enabled(features.SchedulerAsyncPreemption),
 		EnablePodLevelResources:                      feature.DefaultFeatureGate.Enabled(features.PodLevelResources),
 		EnablePartitionableDevices:                   feature.DefaultFeatureGate.Enabled(features.DRAPartitionableDevices),
+		EnableCELDeviceConstraint:                    feature.DefaultFeatureGate.Enabled(features.DRACELDeviceConstraint),
 		EnableStorageCapacityScoring:                 feature.DefaultFeatureGate.Enabled(features.StorageCapacityScoring),
 	}
 

@@ -224,6 +224,9 @@ const (
 	// is to move it into a separate KEP.
 	DRAAdminAccess featuregate.Feature = "DRAAdminAccess"
 
+	// TODO: remove
+	DRACELDeviceConstraint featuregate.Feature = "DRACELDeviceConstraint"
+
 	// owner: @pohly
 	// kep: http://kep.k8s.io/5055
 	//
@@ -1131,6 +1134,10 @@ var defaultVersionedKubernetesFeatureGates = map[featuregate.Feature]featuregate
 	DRAAdminAccess: {
 		{Version: version.MustParse("1.32"), Default: false, PreRelease: featuregate.Alpha},
 	},
+
+	// DRACELDeviceConstraint: {
+	// 	{Version: version.MustParse("1.34"), Default: false, PreRelease: featuregate.Alpha},
+	// },
 
 	DRADeviceTaints: {
 		{Version: version.MustParse("1.33"), Default: false, PreRelease: featuregate.Alpha},
