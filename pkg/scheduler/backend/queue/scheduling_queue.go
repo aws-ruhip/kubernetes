@@ -51,6 +51,7 @@ import (
 	"k8s.io/kubernetes/pkg/scheduler/framework"
 	apicalls "k8s.io/kubernetes/pkg/scheduler/framework/api_calls"
 	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/interpodaffinity"
+	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/names"
 	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/podtopologyspread"
 	"k8s.io/kubernetes/pkg/scheduler/metrics"
 	"k8s.io/kubernetes/pkg/scheduler/util"
@@ -486,6 +487,14 @@ func (p *PriorityQueue) isEventOfInterest(logger klog.Logger, event fwk.ClusterE
 // If all QueueingHintFns returns Skip, the scheduling queue enqueues the Pod back to unschedulable Pod pool
 // because no plugin changes the scheduling result via the event.
 func (p *PriorityQueue) isPodWorthRequeuing(logger klog.Logger, pInfo *framework.QueuedPodInfo, event fwk.ClusterEvent, oldObj, newObj interface{}) queueingStrategy {
+	// Skip DRA-gated pods for Node events. Node updates (e.g., heartbeats) can never
+	// resolve a missing ResourceClaim — only ResourceClaim creation can. At scale (20K nodes),
+	// node heartbeats generate ~40 events/sec, each iterating all gated pods, causing a
+	// requeue storm that consumes the majority of scheduler CPU.
+	if pInfo.Gated() && event.Resource == fwk.Node && pInfo.GatingPlugin == names.DynamicResources {
+		return queueSkip
+	}
+
 	rejectorPlugins := pInfo.UnschedulablePlugins.Union(pInfo.PendingPlugins)
 	if rejectorPlugins.Len() == 0 {
 		logger.V(6).Info("Worth requeuing because no failed plugins", "pod", klog.KObj(pInfo.Pod))
